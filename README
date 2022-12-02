@@ -1,0 +1,4 @@
+DirectFB2-eglgbm
+================
+
+DirectFB2-eglgbm contains the EGL system module for DirectFB2 and supported on GBM (Generic Buffer Manager) platforms.
