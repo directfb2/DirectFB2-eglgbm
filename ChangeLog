@@ -1,3 +1,24 @@
+commit c7ed9c67765b9278ccfb922aa31a20666c8716c2
+Author: Nicolas Caramelli <caramelli.devel@gmail.com>
+Date:   Fri Dec 2 16:10:36 2022 +0100
+
+    GBM_BO_FORMAT_XRGB8888 -> GBM_FORMAT_XRGB8888
+
+commit cef10c45e878beb617ebc9b59c2d449dc5e79a85
+Merge: ee85fcb 163eee2
+Author: DirectFB2 <80045286+directfb2@users.noreply.github.com>
+Date:   Fri Dec 2 11:03:27 2022 +0100
+
+    Merge pull request #1 from caramelli/master
+    
+    GBM system module
+
+commit 163eee21589d6df6dff4c094262da0dfdd864a13
+Author: Nicolas Caramelli <caramelli.devel@gmail.com>
+Date:   Fri Dec 2 11:03:58 2022 +0100
+
+    Add ChangeLog
+
 commit d18f2a229d10d85520166db9263319b7826ecdd6
 Author: Nicolas Caramelli <caramelli.devel@gmail.com>
 Date:   Fri Dec 2 11:03:34 2022 +0100
