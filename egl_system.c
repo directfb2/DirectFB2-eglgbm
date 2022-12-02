@@ -145,8 +145,7 @@ local_init( const char *device_name,
      D_INFO( "EGL/System: Found display configuration\n" );
 
      /* Create EGL window surface. */
-     egl->gbm_surface = gbm_surface_create( egl->gbm, egl->size.w, egl->size.h,
-                                            GBM_BO_FORMAT_XRGB8888, GBM_BO_USE_SCANOUT );
+     egl->gbm_surface = gbm_surface_create( egl->gbm, egl->size.w, egl->size.h, GBM_FORMAT_XRGB8888, GBM_BO_USE_SCANOUT );
      if (!egl->gbm_surface) {
           D_ERROR( "EGL/System: gbm_surface_create() failed!\n" );
           return DFB_INIT;
