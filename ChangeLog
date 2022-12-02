@@ -1,0 +1,11 @@
+commit d18f2a229d10d85520166db9263319b7826ecdd6
+Author: Nicolas Caramelli <caramelli.devel@gmail.com>
+Date:   Fri Dec 2 11:03:34 2022 +0100
+
+    GBM system module
+
+commit ee85fcbec1b6005237490ae70b5331e3de133291
+Author: Nicolas Caramelli <caramelli.devel@gmail.com>
+Date:   Fri Dec 2 11:01:50 2022 +0100
+
+    Initial revision
