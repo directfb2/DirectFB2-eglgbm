@@ -1,3 +1,24 @@
+commit 53e580bcc8d090f80ce20039b56388c4ed3b9846
+Author: Nicolas Caramelli <caramelli.devel@gmail.com>
+Date:   Wed Jan 11 00:53:01 2023 +0100
+
+    Allow DRM/KMS panel orientation property to configure layer rotation
+
+commit c8d58a33d5d07b67d1d936007410421dc6d8da6b
+Merge: cef10c4 7120505
+Author: DirectFB2 <80045286+directfb2@users.noreply.github.com>
+Date:   Fri Dec 2 16:10:11 2022 +0100
+
+    Merge pull request #2 from caramelli/master
+    
+    GBM_BO_FORMAT_XRGB8888 -> GBM_FORMAT_XRGB8888
+
+commit 712050503a344e26869bb7f46e3cd66e6b3580f9
+Author: Nicolas Caramelli <caramelli.devel@gmail.com>
+Date:   Fri Dec 2 16:10:48 2022 +0100
+
+    Update ChangeLog
+
 commit c7ed9c67765b9278ccfb922aa31a20666c8716c2
 Author: Nicolas Caramelli <caramelli.devel@gmail.com>
 Date:   Fri Dec 2 16:10:36 2022 +0100

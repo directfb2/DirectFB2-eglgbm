@@ -25,6 +25,14 @@ D_DEBUG_DOMAIN( EGL_Screen, "EGL/Screen", "EGL Screen" );
 
 /**********************************************************************************************************************/
 
+typedef struct {
+     int rotation;
+} EGLScreenData;
+
+static const char *panel_orientation_table[] = {
+     "Normal", "Upside Down", "Left Side Up", "Right Side Up"
+};
+
 static int hor[] = {
       640,  720,  720,  800, 1024, 1152, 1280, 1280, 1280, 1280, 1400, 1600, 1920, 960, 1440, 800, 1024, 1366, 1920,
      2560, 2560, 3840, 4096
@@ -35,19 +43,30 @@ static int ver[] = {
      1440, 1600, 2160, 2160
 };
 
+/**********************************************************************************************************************/
+
+static int
+eglScreenDataSize()
+{
+     return sizeof(EGLScreenData);
+}
+
 static DFBResult
 eglInitScreen( CoreScreen           *screen,
                void                 *driver_data,
                void                 *screen_data,
                DFBScreenDescription *description )
 {
-     EGLData       *egl = driver_data;
+     EGLData       *egl  = driver_data;
      EGLDataShared *shared;
+     EGLScreenData *data = screen_data;
+     int            width, height;
 
      D_DEBUG_AT( EGL_Screen, "%s()\n", __FUNCTION__ );
 
      D_ASSERT( egl != NULL );
      D_ASSERT( egl->shared != NULL );
+     D_ASSERT( data != NULL );
 
      shared = egl->shared;
 
@@ -58,8 +77,60 @@ eglInitScreen( CoreScreen           *screen,
      /* Set name. */
      snprintf( description->name, DFB_SCREEN_DESC_NAME_LENGTH, "EGL Screen" );
 
-     shared->mode.w = dfb_config->mode.width  ?: egl->size.w;
-     shared->mode.h = dfb_config->mode.height ?: egl->size.h;
+     width  = dfb_config->mode.width  ?: egl->size.w;
+     height = dfb_config->mode.height ?: egl->size.h;
+
+     D_INFO( "EGL/Screen: Default mode is %dx%d\n", width, height );
+
+     /* Get the layer rotation. */
+     if (dfb_config->layers[dfb_config->primary_layer].rotate_set) {
+          data->rotation = dfb_config->layers[dfb_config->primary_layer].rotate;
+     }
+     else {
+          drmModeObjectProperties *props;
+          drmModePropertyRes      *prop;
+          int                      i;
+
+          data->rotation = 0;
+
+          props = drmModeObjectGetProperties( egl->fd, egl->connector->connector_id, DRM_MODE_OBJECT_CONNECTOR );
+          if (!props)
+               return DFB_OK;
+
+          for (i = 0; i < props->count_props; i++) {
+               prop = drmModeGetProperty( egl->fd, props->props[i] );
+
+               if (!strcmp( prop->name, "panel orientation" )) {
+                    D_ASSUME( props->prop_values[i] >= 0 && props->prop_values[i] <= 3 );
+
+                    for (i = 0; i < prop->count_enums; i++) {
+                         if (!strcmp( panel_orientation_table[props->prop_values[i]], "Upside Down" ))
+                              data->rotation = 180;
+                         else if (!strcmp( panel_orientation_table[props->prop_values[i]], "Left Side Up" ))
+                              data->rotation = 270;
+                         else if (!strcmp( panel_orientation_table[props->prop_values[i]], "Right Side Up" ))
+                              data->rotation = 90;
+                    }
+
+                    D_INFO( "EGL/Screen: Using %s panel orientation (rotation = %d)\n",
+                            panel_orientation_table[props->prop_values[i]], data->rotation);
+                    break;
+               }
+
+               drmModeFreeProperty( prop );
+          }
+
+          drmModeFreeObjectProperties( props );
+     }
+
+     if (data->rotation == 90 || data->rotation == 270) {
+          shared->mode.w = height <= width ? width : (float) height * height / width;
+          shared->mode.h = height <= width ? (float) width * width / height : height;
+     }
+     else {
+          shared->mode.w = width;
+          shared->mode.h = height;
+     }
 
      return DFB_OK;
 }
@@ -155,9 +226,28 @@ eglGetScreenSize( CoreScreen *screen,
      return DFB_OK;
 }
 
+static DFBResult
+eglGetScreenRotation( CoreScreen *screen,
+                      void       *driver_data,
+                      void       *screen_data,
+                      int        *ret_rotation )
+{
+     EGLScreenData *data = screen_data;
+
+     D_DEBUG_AT( EGL_Screen, "%s()\n", __FUNCTION__ );
+
+     D_ASSERT( data != NULL );
+
+     *ret_rotation = data->rotation;
+
+     return DFB_OK;
+}
+
 const ScreenFuncs eglScreenFuncs = {
-     .InitScreen      = eglInitScreen,
-     .InitOutput      = eglInitOutput,
-     .SetOutputConfig = eglSetOutputConfig,
-     .GetScreenSize   = eglGetScreenSize
+     .ScreenDataSize    = eglScreenDataSize,
+     .InitScreen        = eglInitScreen,
+     .InitOutput        = eglInitOutput,
+     .SetOutputConfig   = eglSetOutputConfig,
+     .GetScreenSize     = eglGetScreenSize,
+     .GetScreenRotation = eglGetScreenRotation
 };
