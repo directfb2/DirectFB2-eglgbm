@@ -1,3 +1,24 @@
+commit 106a73318bb008cfa4e6929694a601bc53da122c
+Author: Nicolas Caramelli <caramelli.devel@gmail.com>
+Date:   Thu Mar 23 17:16:51 2023 +0100
+
+    Add pkg-config file (for static build)
+
+commit 495d83b7d0c03b3a1efb16037c7247ff86e2f7b2
+Merge: c8d58a3 9533265
+Author: DirectFB2 <80045286+directfb2@users.noreply.github.com>
+Date:   Wed Jan 11 01:01:32 2023 +0100
+
+    Merge pull request #3 from caramelli/master
+    
+    Allow DRM/KMS panel orientation property to configure layer rotation
+
+commit 95332654d3fa58f669139b1751a1dcd137556e72
+Author: Nicolas Caramelli <caramelli.devel@gmail.com>
+Date:   Wed Jan 11 00:53:28 2023 +0100
+
+    Update ChangeLog
+
 commit 53e580bcc8d090f80ce20039b56388c4ed3b9846
 Author: Nicolas Caramelli <caramelli.devel@gmail.com>
 Date:   Wed Jan 11 00:53:01 2023 +0100
