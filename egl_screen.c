@@ -113,7 +113,7 @@ eglInitScreen( CoreScreen           *screen,
                     }
 
                     D_INFO( "EGL/Screen: Using %s panel orientation (rotation = %d)\n",
-                            panel_orientation_table[props->prop_values[i]], data->rotation);
+                            panel_orientation_table[props->prop_values[i]], data->rotation );
                     break;
                }
 

@@ -21,7 +21,9 @@ directfb_dep = dependency('directfb-internal')
 
 moduledir = directfb_dep.get_pkgconfig_variable('moduledir')
 
-eglgbm_dep = [dependency('egl'), dependency('glesv2'), dependency('gbm'), dependency('libdrm')]
+eglgbm_dep = [dependency('egl'), dependency('gbm'), dependency('glesv2'), dependency('libdrm')]
+
+pkgconfig = import('pkgconfig')
 
 eglgbm_sources = [
   'egl_layer.c',
@@ -35,3 +37,15 @@ library('directfb_eglgbm',
         dependencies: [directfb_dep, eglgbm_dep],
         install: true,
         install_dir: join_paths(moduledir, 'systems'))
+
+pkgconfig.generate(filebase: 'directfb-system-eglgbm',
+                   variables: 'moduledir=' + moduledir,
+                   name: 'DirectFB-system-eglgbm',
+                   description: 'GBM system module',
+                   requires_private: ['egl', 'gbm', 'glesv2', 'libdrm'],
+                   libraries_private: ['-L${moduledir}/systems',
+                                       '-Wl,--whole-archive -ldirectfb_eglgbm -Wl,--no-whole-archive'])
+
+if get_option('default_library') != 'shared'
+  meson.add_install_script('dfb-update-pkgconfig', skip_if_destdir: true)
+endif
