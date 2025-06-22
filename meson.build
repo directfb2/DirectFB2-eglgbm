@@ -19,7 +19,7 @@ project('DirectFB2-eglgbm', 'c',
 
 directfb_dep = dependency('directfb-internal')
 
-moduledir = directfb_dep.get_pkgconfig_variable('moduledir')
+moduledir = directfb_dep.get_variable(pkgconfig: 'moduledir')
 
 eglgbm_dep = [dependency('egl'), dependency('gbm'), dependency('glesv2'), dependency('libdrm')]
 

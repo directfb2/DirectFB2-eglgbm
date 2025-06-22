@@ -35,6 +35,45 @@ extern const ScreenFuncs       eglScreenFuncs;
 extern const DisplayLayerFuncs eglPrimaryLayerFuncs;
 extern const SurfacePoolFuncs  eglSurfacePoolFuncs;
 
+static void
+get_device_info( EGLDataShared *shared )
+{
+     int         max_devices, i;
+     drmDevice **devices;
+
+     max_devices = drmGetDevices2( 0, NULL, 0 );
+     if (max_devices <= 0)
+          return;
+
+     devices = D_CALLOC( max_devices, sizeof(*devices) );
+     if (!devices) {
+          D_OOM();
+          return;
+     }
+
+     drmGetDevices2( 0, devices, max_devices );
+
+     for (i = 0; i < max_devices; i++) {
+          if (!(devices[i]->available_nodes & (1 << DRM_NODE_PRIMARY)))
+               continue;
+
+          if (!strcmp( shared->device_name, devices[i]->nodes[DRM_NODE_PRIMARY] )) {
+               if (devices[i]->bustype == DRM_BUS_PCI) {
+                    shared->pci.bus       = devices[i]->businfo.pci->bus;
+                    shared->pci.dev       = devices[i]->businfo.pci->dev;
+                    shared->pci.func      = devices[i]->businfo.pci->func;
+                    shared->device.vendor = devices[i]->deviceinfo.pci->vendor_id;
+                    shared->device.model  = devices[i]->deviceinfo.pci->device_id;
+               }
+               break;
+          }
+     }
+
+     drmFreeDevices( devices, max_devices );
+
+     D_FREE( devices );
+}
+
 static DFBResult
 local_init( const char *device_name,
             EGLData    *egl )
@@ -278,6 +317,10 @@ system_initialize( CoreDFB  *core,
      if (ret)
           goto error;
 
+     shared->device.vendor = 0xffff;
+     shared->device.model  = 0xffff;
+     get_device_info( shared );
+
      *ret_data = egl;
 
      ret = dfb_surface_pool_initialize( core, &eglSurfacePoolFuncs, &shared->pool );
@@ -440,10 +483,18 @@ system_unmap_mmio( volatile void *addr,
 {
 }
 
-static int
+static unsigned int
 system_get_accelerator()
 {
-     return direct_config_get_int_value( "accelerator" );
+     EGLData       *egl = dfb_system_data();
+     EGLDataShared *shared;
+
+     D_ASSERT( egl != NULL );
+     D_ASSERT( egl->shared != NULL );
+
+     shared = egl->shared;
+
+     return shared->device.vendor << 16 | shared->device.model;
 }
 
 static unsigned long
@@ -469,12 +520,31 @@ system_get_busid( int *ret_bus,
                   int *ret_dev,
                   int *ret_func )
 {
-     return;
+     EGLData       *egl = dfb_system_data();
+     EGLDataShared *shared;
+
+     D_ASSERT( egl != NULL );
+     D_ASSERT( egl->shared != NULL );
+
+     shared = egl->shared;
+
+     *ret_bus  = shared->pci.bus;
+     *ret_dev  = shared->pci.dev;
+     *ret_func = shared->pci.func;
 }
 
 static void
 system_get_deviceid( unsigned int *ret_vendor_id,
                      unsigned int *ret_device_id )
 {
-     return;
+     EGLData       *egl = dfb_system_data();
+     EGLDataShared *shared;
+
+     D_ASSERT( egl != NULL );
+     D_ASSERT( egl->shared != NULL );
+
+     shared = egl->shared;
+
+     *ret_vendor_id = shared->device.vendor;
+     *ret_device_id = shared->device.model;
 }
