@@ -36,6 +36,17 @@ typedef struct {
      char                 device_name[256]; /* device name, e.g. /dev/dri/card0 */
 
      DFBDimension         mode;             /* current video mode */
+
+     struct {
+          int             bus;              /* PCI Bus */
+          int             dev;              /* PCI Device */
+          int             func;             /* PCI Function */
+     } pci;
+
+     struct {
+          unsigned short  vendor;           /* graphics device vendor id */
+          unsigned short  model;            /* graphics device model id */
+     } device;
 } EGLDataShared;
 
 typedef struct {
