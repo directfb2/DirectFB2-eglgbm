@@ -1,3 +1,24 @@
+commit 1944ecab2332ea6bb22ec21ab0a2e6c6507849fb
+Author: Nicolas Caramelli <caramelli.devel@gmail.com>
+Date:   Sun Jun 22 20:57:51 2025 +0200
+
+    Get DRM device information
+
+commit 6a46274feba97eab3aac651e760157614a7b2b14
+Merge: 495d83b 7fc0757
+Author: DirectFB2 <80045286+directfb2@users.noreply.github.com>
+Date:   Thu Mar 23 17:20:09 2023 +0100
+
+    Merge pull request #4 from caramelli/master
+    
+    Add pkg-config file (for static build)
+
+commit 7fc0757c1aea3de57a236e72345f9789f6feb4b4
+Author: Nicolas Caramelli <caramelli.devel@gmail.com>
+Date:   Thu Mar 23 17:17:14 2023 +0100
+
+    Update ChangeLog
+
 commit 106a73318bb008cfa4e6929694a601bc53da122c
 Author: Nicolas Caramelli <caramelli.devel@gmail.com>
 Date:   Thu Mar 23 17:16:51 2023 +0100
